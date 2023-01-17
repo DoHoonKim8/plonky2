@@ -97,7 +97,7 @@ impl<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: usize>
         })
     }
 
-    pub(crate) fn get_public_inputs_hash(
+    pub fn get_public_inputs_hash(
         &self,
     ) -> <<C as GenericConfig<D>>::InnerHasher as Hasher<F>>::Hash {
         C::InnerHasher::hash_no_pad(&self.public_inputs)
