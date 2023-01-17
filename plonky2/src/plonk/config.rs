@@ -18,7 +18,7 @@ use crate::plonk::circuit_builder::CircuitBuilder;
 pub trait GenericHashOut<F: RichField>:
     Copy + Clone + Debug + Eq + PartialEq + Send + Sync + Serialize + DeserializeOwned
 {
-    pub fn to_bytes(&self) -> Vec<u8>;
+    fn to_bytes(&self) -> Vec<u8>;
     fn from_bytes(bytes: &[u8]) -> Self;
 
     fn to_vec(&self) -> Vec<F>;
