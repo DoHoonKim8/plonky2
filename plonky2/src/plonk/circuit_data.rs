@@ -275,10 +275,10 @@ pub struct CommonCircuitData<F: RichField + Extendable<D>, const D: usize> {
     pub fri_params: FriParams,
 
     /// The types of gates used in this circuit, along with their prefixes.
-    pub(crate) gates: Vec<GateRef<F, D>>,
+    pub gates: Vec<GateRef<F, D>>,
 
     /// Information on the circuit's selector polynomials.
-    pub(crate) selectors_info: SelectorsInfo,
+    pub selectors_info: SelectorsInfo,
 
     /// The degree of the PLONK quotient polynomial.
     pub quotient_degree_factor: usize,
