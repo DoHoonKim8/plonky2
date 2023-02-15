@@ -193,7 +193,7 @@ pub trait Gate<F: RichField + Extendable<D>, const D: usize>: 'static + Send + S
 
 /// A wrapper around an `Rc<Gate>` which implements `PartialEq`, `Eq` and `Hash` based on gate IDs.
 #[derive(Clone)]
-pub struct GateRef<F: RichField + Extendable<D>, const D: usize>(pub(crate) Arc<dyn Gate<F, D>>);
+pub struct GateRef<F: RichField + Extendable<D>, const D: usize>(pub Arc<dyn Gate<F, D>>);
 
 impl<F: RichField + Extendable<D>, const D: usize> GateRef<F, D> {
     pub fn new<G: Gate<F, D>>(gate: G) -> GateRef<F, D> {
