@@ -99,6 +99,7 @@ pub trait Gate<F: RichField + Extendable<D>, const D: usize>: 'static + Send + S
             vars.local_constants[selector_index],
             num_selectors > 1,
         );
+        println!("plonky2 filter : {}", filter);
         vars.remove_prefix(num_selectors);
         self.eval_unfiltered(vars)
             .into_iter()
