@@ -174,6 +174,7 @@ pub fn prove<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: 
         zeta.exp_power_of_2(common_data.degree_bits()) != F::Extension::ONE,
         "Opening point is in the subgroup."
     );
+    println!("plonky2 zeta pow deg : {}", zeta.exp_power_of_2(common_data.degree_bits()));
 
     let openings = timed!(
         timing,
