@@ -189,6 +189,7 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
                     n,
                     round_proof,
                     params,
+                    i,
                 )
             );
         }
@@ -200,6 +201,7 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
         proof: &FriInitialTreeProofTarget,
         initial_merkle_caps: &[MerkleCapTarget],
         cap_index: Target,
+        round: usize,
     ) {
         for (i, ((evals, merkle_proof), cap)) in proof
             .evals_proofs
@@ -276,6 +278,7 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
         n: usize,
         round_proof: &FriQueryRoundTarget<D>,
         params: &FriParams,
+        round: usize,
     ) where
         C::Hasher: AlgebraicHasher<F>,
     {
@@ -295,7 +298,8 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
                 &x_index_bits,
                 &round_proof.initial_trees_proof,
                 initial_merkle_caps,
-                cap_index
+                cap_index,
+                round,
             )
         );
 
