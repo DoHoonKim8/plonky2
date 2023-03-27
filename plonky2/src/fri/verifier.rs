@@ -1,6 +1,7 @@
 use alloc::vec::Vec;
 
 use anyhow::{ensure, Result};
+use itertools::Itertools;
 
 use crate::field::extension::{flatten, Extendable, FieldExtension};
 use crate::field::interpolation::{barycentric_weights, interpolate};
@@ -135,7 +136,6 @@ pub(crate) fn fri_combine_initial<
     let subgroup_x = F::Extension::from_basefield(subgroup_x);
     let mut alpha = ReducingFactor::new(alpha);
     let mut sum = F::Extension::ZERO;
-
     for (batch, reduced_openings) in instance
         .batches
         .iter()
@@ -154,9 +154,10 @@ pub(crate) fn fri_combine_initial<
         let numerator = reduced_evals - *reduced_openings;
         let denominator = subgroup_x - *point;
         sum = alpha.shift(sum);
+        println!("plonky2 sum : {:?}", sum);
         sum += numerator / denominator;
     }
-
+    println!("plonky2 sum : {:?}", sum);
     sum
 }
 
@@ -184,9 +185,7 @@ fn fri_verifier_query_round<
     let log_n = log2_strict(n);
     let mut subgroup_x = F::MULTIPLICATIVE_GROUP_GENERATOR
         * F::primitive_root_of_unity(log_n).exp_u64(reverse_bits(x_index, log_n) as u64);
-    println!("x_index : {:?}", x_index);
-    println!("subgroup_x / offset : {:?}", F::primitive_root_of_unity(log_n).exp_u64(reverse_bits(x_index, log_n) as u64));
-    println!("subgroup_x : {:?}", subgroup_x);
+
     // old_eval is the last derived evaluation; it will be checked for consistency with its
     // committed "parent" value in the next iteration.
     let mut old_eval = fri_combine_initial::<F, C, D>(
