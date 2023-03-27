@@ -184,7 +184,9 @@ fn fri_verifier_query_round<
     let log_n = log2_strict(n);
     let mut subgroup_x = F::MULTIPLICATIVE_GROUP_GENERATOR
         * F::primitive_root_of_unity(log_n).exp_u64(reverse_bits(x_index, log_n) as u64);
-
+    println!("x_index : {:?}", x_index);
+    println!("subgroup_x / offset : {:?}", F::primitive_root_of_unity(log_n).exp_u64(reverse_bits(x_index, log_n) as u64));
+    println!("subgroup_x : {:?}", subgroup_x);
     // old_eval is the last derived evaluation; it will be checked for consistency with its
     // committed "parent" value in the next iteration.
     let mut old_eval = fri_combine_initial::<F, C, D>(

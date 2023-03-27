@@ -84,7 +84,6 @@ impl<F: RichField + Extendable<D>, H: AlgebraicHasher<F>, const D: usize>
         let num_fri_queries = inner_fri_config.num_query_rounds;
         // Scaling factor to combine polynomials.
         let fri_alpha = self.get_extension_challenge(builder);
-        println!("plonky2 fri_alpha : {:?}", fri_alpha);
 
         // Recover the random betas used in the FRI reductions.
         let fri_betas = commit_phase_merkle_caps
@@ -94,7 +93,6 @@ impl<F: RichField + Extendable<D>, H: AlgebraicHasher<F>, const D: usize>
                 self.get_extension_challenge(builder)
             })
             .collect();
-        println!("plonky2 fri_betas : {:?}", fri_betas);
 
         self.observe_extension_elements(&final_poly.0);
 
@@ -104,7 +102,6 @@ impl<F: RichField + Extendable<D>, H: AlgebraicHasher<F>, const D: usize>
         let fri_query_indices = (0..num_fri_queries)
             .map(|_| self.get_challenge(builder))
             .collect();
-        println!("plonky2 fri_query_indices : {:?}", fri_query_indices);
 
         FriChallengesTarget {
             fri_alpha,

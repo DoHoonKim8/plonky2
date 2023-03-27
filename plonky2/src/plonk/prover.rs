@@ -165,7 +165,6 @@ pub fn prove<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: 
     challenger.observe_cap(&quotient_polys_commitment.merkle_tree.cap);
 
     let zeta = challenger.get_extension_challenge::<D>();
-    println!("plonky2 zeta : {}", zeta);
     // To avoid leaking witness data, we want to ensure that our opening locations, `zeta` and
     // `g * zeta`, are not in our subgroup `H`. It suffices to check `zeta` only, since
     // `(g * zeta)^n = zeta^n`, where `n` is the order of `g`.
@@ -174,7 +173,6 @@ pub fn prove<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: 
         zeta.exp_power_of_2(common_data.degree_bits()) != F::Extension::ONE,
         "Opening point is in the subgroup."
     );
-    println!("plonky2 zeta pow deg : {}", zeta.exp_power_of_2(common_data.degree_bits()));
 
     let openings = timed!(
         timing,
