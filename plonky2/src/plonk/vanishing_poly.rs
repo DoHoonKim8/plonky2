@@ -42,7 +42,6 @@ pub(crate) fn eval_vanishing_poly<
     let num_prods = common_data.num_partial_products;
 
     let constraint_terms = evaluate_gate_constraints::<F, C, D>(common_data, vars);
-    println!("plonky2 constraint_terms: {:?}", constraint_terms);
 
     // The L_0(x) (Z(x) - 1) vanishing terms.
     let mut vanishing_z_1_terms = Vec::new();

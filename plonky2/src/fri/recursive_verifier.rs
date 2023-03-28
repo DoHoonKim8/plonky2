@@ -258,7 +258,6 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
                 })
                 .collect_vec();
             let reduced_evals = alpha.reduce_base(&evals, self);
-            println!("plonky2 reduced_evals : {:?}", reduced_evals);
             let numerator = self.sub_extension(reduced_evals, *reduced_openings);
             let denominator = self.sub_extension(subgroup_x, *point);
             sum = alpha.shift(sum, self);

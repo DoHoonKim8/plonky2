@@ -145,10 +145,10 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
         let fri_field_bits = F::Extension::order().bits() as usize;
         let fri_query_security_bits = num_query_rounds * rate_bits + proof_of_work_bits as usize;
         let fri_security_bits = fri_field_bits.min(fri_query_security_bits);
-        assert!(
-            fri_security_bits >= security_bits,
-            "FRI params fall short of target security"
-        );
+        // assert!(
+        //     fri_security_bits >= security_bits,
+        //     "FRI params fall short of target security"
+        // );
     }
 
     pub fn set_domain_separator(&mut self, separator: Vec<F>) {

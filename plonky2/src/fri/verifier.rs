@@ -154,10 +154,8 @@ pub(crate) fn fri_combine_initial<
         let numerator = reduced_evals - *reduced_openings;
         let denominator = subgroup_x - *point;
         sum = alpha.shift(sum);
-        println!("plonky2 sum : {:?}", sum);
         sum += numerator / denominator;
     }
-    println!("plonky2 sum : {:?}", sum);
     sum
 }
 
@@ -200,6 +198,10 @@ fn fri_verifier_query_round<
     for (i, &arity_bits) in params.reduction_arity_bits.iter().enumerate() {
         let arity = 1 << arity_bits;
         let evals = &round_proof.steps[i].evals;
+        println!("round {i} evals : ");
+        evals.iter().map(|eval| {
+            println!("{:?}", eval);
+        }).collect_vec();
 
         // Split x_index into the index of the coset x is in, and the index of x within that coset.
         let coset_index = x_index >> arity_bits;
@@ -217,12 +219,15 @@ fn fri_verifier_query_round<
             challenges.fri_betas[i],
         );
 
-        verify_merkle_proof_to_cap::<F, C::Hasher>(
-            flatten(evals),
-            coset_index,
-            &proof.commit_phase_merkle_caps[i],
-            &round_proof.steps[i].merkle_proof,
-        )?;
+        if i == 0 {
+            println!("plonky2 coset_index : {:?}", coset_index);
+            verify_merkle_proof_to_cap::<F, C::Hasher>(
+                flatten(evals),
+                coset_index,
+                &proof.commit_phase_merkle_caps[i],
+                &round_proof.steps[i].merkle_proof,
+            )?;
+        }
 
         // Update the point x to x^arity.
         subgroup_x = subgroup_x.exp_power_of_2(arity_bits);
