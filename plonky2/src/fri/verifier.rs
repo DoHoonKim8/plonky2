@@ -36,6 +36,7 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
     reverse_index_bits_in_place(&mut evals);
     let rev_x_index_within_coset = reverse_bits(x_index_within_coset, arity_bits);
     let coset_start = x * g.exp_u64((arity - rev_x_index_within_coset) as u64);
+    println!("coset_start : {:?}", coset_start);
     // The answer is gotten by interpolating {(x*g^i, P(x*g^i))} and evaluating at beta.
     let points = g
         .powers()
@@ -198,10 +199,6 @@ fn fri_verifier_query_round<
     for (i, &arity_bits) in params.reduction_arity_bits.iter().enumerate() {
         let arity = 1 << arity_bits;
         let evals = &round_proof.steps[i].evals;
-        println!("round {i} evals : ");
-        evals.iter().map(|eval| {
-            println!("{:?}", eval);
-        }).collect_vec();
 
         // Split x_index into the index of the coset x is in, and the index of x within that coset.
         let coset_index = x_index >> arity_bits;
