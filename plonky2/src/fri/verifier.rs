@@ -2,6 +2,7 @@ use alloc::vec::Vec;
 
 use anyhow::{ensure, Result};
 use itertools::Itertools;
+use plonky2_field::goldilocks_field::GoldilocksField;
 
 use crate::field::extension::{flatten, Extendable, FieldExtension};
 use crate::field::interpolation::{barycentric_weights, interpolate};
@@ -36,7 +37,6 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
     reverse_index_bits_in_place(&mut evals);
     let rev_x_index_within_coset = reverse_bits(x_index_within_coset, arity_bits);
     let coset_start = x * g.exp_u64((arity - rev_x_index_within_coset) as u64);
-    println!("coset_start : {:?}", coset_start);
     // The answer is gotten by interpolating {(x*g^i, P(x*g^i))} and evaluating at beta.
     let points = g
         .powers()
@@ -215,16 +215,14 @@ fn fri_verifier_query_round<
             evals,
             challenges.fri_betas[i],
         );
-
-        if i == 0 {
-            println!("plonky2 coset_index : {:?}", coset_index);
-            verify_merkle_proof_to_cap::<F, C::Hasher>(
-                flatten(evals),
-                coset_index,
-                &proof.commit_phase_merkle_caps[i],
-                &round_proof.steps[i].merkle_proof,
-            )?;
-        }
+        let evals = flatten(evals);
+        println!("evals : {:?}", evals);
+        verify_merkle_proof_to_cap::<F, C::Hasher>(
+            evals,
+            coset_index,
+            &proof.commit_phase_merkle_caps[i],
+            &round_proof.steps[i].merkle_proof,
+        )?;
 
         // Update the point x to x^arity.
         subgroup_x = subgroup_x.exp_power_of_2(arity_bits);
