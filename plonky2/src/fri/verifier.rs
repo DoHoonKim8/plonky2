@@ -1,8 +1,6 @@
 use alloc::vec::Vec;
 
 use anyhow::{ensure, Result};
-use itertools::Itertools;
-use plonky2_field::goldilocks_field::GoldilocksField;
 
 use crate::field::extension::{flatten, Extendable, FieldExtension};
 use crate::field::interpolation::{barycentric_weights, interpolate};
@@ -37,6 +35,7 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
     reverse_index_bits_in_place(&mut evals);
     let rev_x_index_within_coset = reverse_bits(x_index_within_coset, arity_bits);
     let coset_start = x * g.exp_u64((arity - rev_x_index_within_coset) as u64);
+    println!("Plonky2 coset_start : {:?}", coset_start);
     // The answer is gotten by interpolating {(x*g^i, P(x*g^i))} and evaluating at beta.
     let points = g
         .powers()
@@ -216,7 +215,6 @@ fn fri_verifier_query_round<
             challenges.fri_betas[i],
         );
         let evals = flatten(evals);
-        println!("evals : {:?}", evals);
         verify_merkle_proof_to_cap::<F, C::Hasher>(
             evals,
             coset_index,
