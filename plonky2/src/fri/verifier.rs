@@ -1,6 +1,7 @@
 use alloc::vec::Vec;
 
 use anyhow::{ensure, Result};
+use plonky2_field::interpolation::interpolate2;
 
 use crate::field::extension::{flatten, Extendable, FieldExtension};
 use crate::field::interpolation::{barycentric_weights, interpolate};
@@ -42,7 +43,7 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
         .zip(evals)
         .collect::<Vec<_>>();
     let barycentric_weights = barycentric_weights(&points);
-    let result = interpolate(&points, beta, &barycentric_weights);
+    let result = interpolate2(points.try_into().unwrap(), beta);
     println!("Plonky2 result : {:?}", result);
     result
 }
