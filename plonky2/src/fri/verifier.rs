@@ -35,7 +35,6 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
     reverse_index_bits_in_place(&mut evals);
     let rev_x_index_within_coset = reverse_bits(x_index_within_coset, arity_bits);
     let coset_start = x * g.exp_u64((arity - rev_x_index_within_coset) as u64);
-    println!("Plonky2 coset_start : {:?}", coset_start);
     // The answer is gotten by interpolating {(x*g^i, P(x*g^i))} and evaluating at beta.
     let points = g
         .powers()
@@ -43,7 +42,9 @@ pub(crate) fn compute_evaluation<F: Field + Extendable<D>, const D: usize>(
         .zip(evals)
         .collect::<Vec<_>>();
     let barycentric_weights = barycentric_weights(&points);
-    interpolate(&points, beta, &barycentric_weights)
+    let result = interpolate(&points, beta, &barycentric_weights);
+    println!("Plonky2 result : {:?}", result);
+    result
 }
 
 pub(crate) fn fri_verify_proof_of_work<F: RichField + Extendable<D>, const D: usize>(
