@@ -68,7 +68,6 @@ pub fn verify_merkle_proof_to_cap<F: RichField, H: Hasher<F>>(
             H::two_to_one(current_digest, sibling_digest)
         }
     }
-    println!("plonky2 cap index : {:?}", index);
     ensure!(
         current_digest == merkle_cap.0[index],
         "Invalid Merkle proof."
