@@ -279,8 +279,6 @@ pub trait Poseidon: PrimeField64 {
     {
         // If we have enough routed wires, we will use PoseidonMdsGate.
         let mds_gate = PoseidonMdsGate::<Self, D>::new();
-        println!("num_routed_wires : {:?}", builder.config.num_routed_wires);
-        println!("num_wires : {:?}", mds_gate.num_wires());
         if builder.config.num_routed_wires >= mds_gate.num_wires() {
             let index = builder.add_gate(mds_gate, vec![]);
             for i in 0..WIDTH {
