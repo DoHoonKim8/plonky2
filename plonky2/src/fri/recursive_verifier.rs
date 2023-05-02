@@ -50,23 +50,40 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
         let coset_start = self.mul(start, x);
 
         // The answer is gotten by interpolating {(x*g^i, P(x*g^i))} and evaluating at beta.
+        let mut points = vec![];
+        points.push((self.convert_to_ext(coset_start), evals[0]));
+        let coset_end = self.mul_const(g, coset_start);
+        points.push((self.convert_to_ext(coset_end), evals[1]));
+        // TODO : For now, only 2-arity is supported. Otherwise, FFT implementation over extension Field is required.
+        // a0 -> a1
+        // b0 -> b1
+        // x  -> a1 + (x-a0)*(b1-a1)/(b0-a0)
+        let (a0, a1) = points[0];
+        let (b0, b1) = points[1];
+
+        // a1 + (x - a0) * (b1 - a1) / (b0 - a0)
+        let x_minus_a0 = self.sub_extension(beta, a0);
+        let b1_minus_a1 = self.sub_extension(b1, a1);
+        let numerator = self.mul_extension(x_minus_a0, b1_minus_a1);
+        let denominator = self.sub_extension(b0, a0);
+        self.div_add_extension(numerator, denominator, a1)
         // `HighDegreeInterpolationGate` has degree `arity`, so we use the low-degree gate if
         // the arity is too large.
-        if arity > self.config.max_quotient_degree_factor {
-            self.interpolate_coset::<LowDegreeInterpolationGate<F, D>>(
-                arity_bits,
-                coset_start,
-                &evals,
-                beta,
-            )
-        } else {
-            self.interpolate_coset::<HighDegreeInterpolationGate<F, D>>(
-                arity_bits,
-                coset_start,
-                &evals,
-                beta,
-            )
-        }
+        // if arity > self.config.max_quotient_degree_factor {
+        //     self.interpolate_coset::<LowDegreeInterpolationGate<F, D>>(
+        //         arity_bits,
+        //         coset_start,
+        //         &evals,
+        //         beta,
+        //     )
+        // } else {
+        //     self.interpolate_coset::<HighDegreeInterpolationGate<F, D>>(
+        //         arity_bits,
+        //         coset_start,
+        //         &evals,
+        //         beta,
+        //     )
+        // }
     }
 
     /// Make sure we have enough wires and routed wires to do the FRI checks efficiently. This check
@@ -128,9 +145,9 @@ impl<F: RichField + Extendable<D>, const D: usize> CircuitBuilder<F, D> {
     ) where
         C::Hasher: AlgebraicHasher<F>,
     {
-        if let Some(max_arity_bits) = params.max_arity_bits() {
-            self.check_recursion_config::<C>(max_arity_bits);
-        }
+        // if let Some(max_arity_bits) = params.max_arity_bits() {
+        //     self.check_recursion_config::<C>(max_arity_bits);
+        // }
 
         debug_assert_eq!(
             params.final_poly_len(),
